@@ -1,8 +1,11 @@
-import { View, Text, ViewBase } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { ScrollView, Text, View } from "react-native";
 import { ArrowRightIcon } from "react-native-heroicons/outline";
-import { ScrollView } from "react-native-gesture-handler";
+
 import RestaurantCard from "../Catagories/RestaurantCard";
+import { SanityClient } from "@sanity/client";
+import { client } from "@/sanity";
+import { restaurant } from "@/deliveroo-clone-1/schemaTypes/restaurant";
 
 type Props = {
   title: string;
@@ -11,6 +14,52 @@ type Props = {
 };
 
 const FeaturedRow = ({ description, id, title }: Props) => {
+  const [restaurants, setRestaurants] = useState<
+    {
+      address: string;
+      shortDescription: string;
+      dishes: string[];
+      long: number;
+      lat: number;
+      rating: number;
+      _id: string;
+      image: string;
+      name: string;
+    }[]
+  >([]);
+
+  useEffect(() => {
+    client
+      .fetch(
+        `*[_type == "featured" && _id=="${id}"] {
+      ...,
+      restaurants[] -> {
+        ...,
+        dishes[] -> {
+          ...
+        }
+      }
+    }`
+      )
+      .then((data) => {
+        const dataFethced: {
+          address: string;
+          shortDescription: string;
+          dishes: string[];
+          long: number;
+          lat: number;
+          rating: number;
+          _id: string;
+          image: string;
+          name: string;
+        }[] = data[0].restaurants;
+
+        console.log(data[0].restaurants);
+
+        setRestaurants(dataFethced);
+      });
+  }, [id]);
+
   return (
     <View>
       <View className="mt-4 flex-row items-center justify-between px-4">
@@ -26,42 +75,36 @@ const FeaturedRow = ({ description, id, title }: Props) => {
         showsHorizontalScrollIndicator={false}
         className="pt-4"
       >
-        <RestaurantCard
-          address="Istanbul"
-          dishes={[]}
-          genre="Et"
-          id="1"
-          imageUrl="https://theistanbulinsider.com/wp-content/uploads/2010/12/doner-kebap-istanbul.jpg"
-          lat={0}
-          long={0}
-          rating={0}
-          shortDescription="Most delicious doner is here!"
-          title="Donerci Yunus"
-        />
-        <RestaurantCard
-          address="Istanbul"
-          dishes={[]}
-          genre="Et"
-          id="1"
-          imageUrl="https://theistanbulinsider.com/wp-content/uploads/2010/12/doner-kebap-istanbul.jpg"
-          lat={0}
-          long={0}
-          rating={0}
-          shortDescription="Most delicious doner is here!"
-          title="Donerci Yunus"
-        />
-        <RestaurantCard
-          address="Istanbul"
-          dishes={[]}
-          genre="Et"
-          id="1"
-          imageUrl="https://theistanbulinsider.com/wp-content/uploads/2010/12/doner-kebap-istanbul.jpg"
-          lat={0}
-          long={0}
-          rating={0}
-          shortDescription="Most delicious doner is here!"
-          title="Donerci Yunus"
-        />
+        {restaurants?.map((r) => (
+          <RestaurantCard
+            key={r._id}
+            id={r._id}
+            title={r.name}
+            rating={r.rating}
+            genre={r.shortDescription}
+            address={r.address}
+            imageUrl={r.image}
+            long={r.long}
+            lat={r.lat}
+            dishes={r.dishes}
+            shortDescription={r.shortDescription}
+          />
+        ))}
+        {restaurants?.map((r) => (
+          <RestaurantCard
+            key={r._id}
+            id={r._id}
+            title={r.name}
+            rating={r.rating}
+            genre={r.shortDescription}
+            address={r.address}
+            imageUrl={r.image}
+            long={r.long}
+            lat={r.lat}
+            dishes={r.dishes}
+            shortDescription={r.shortDescription}
+          />
+        ))}
       </ScrollView>
     </View>
   );

@@ -1,6 +1,6 @@
 import Catagories from "@/components/Catagories/Catagories";
 import { useNavigation } from "expo-router";
-import React, { useLayoutEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   SafeAreaView,
@@ -16,14 +16,40 @@ import {
   UserIcon,
 } from "react-native-heroicons/outline";
 import FeaturedRow from "../Featured/FeaturedRow";
+import { client } from "@/sanity";
 
 const HomeScreen = () => {
   const navigiation = useNavigation();
 
-  useLayoutEffect(() => {
+  const [featuredCatagories, setFeatureCatagories] = useState<
+    { description: string; id: string; title: string }[]
+  >([]);
+
+  useEffect(() => {
     navigiation.setOptions({
       headerShown: false,
     });
+  }, []);
+
+  useEffect(() => {
+    client
+      .fetch(
+        `*[_type == "featured"] {
+      ...,
+      dishes[] ->
+    }`
+      )
+      .then((data) => {
+        const newDatas = data.map((featured: any) => {
+          return {
+            description: featured.short_description,
+            id: featured._id,
+            title: featured.name,
+          };
+        });
+
+        setFeatureCatagories(newDatas);
+      });
   }, []);
 
   return (
@@ -64,17 +90,14 @@ const HomeScreen = () => {
       >
         <Catagories />
 
-        <FeaturedRow description="Featured" title="Featured" id="1" />
-        <FeaturedRow
-          description="Tasty Discounts"
-          title="Tasty Discounts"
-          id="2"
-        />
-        <FeaturedRow
-          description="Offers Near You!"
-          title="Offers Near You"
-          id="3"
-        />
+        {featuredCatagories.map((f) => (
+          <FeaturedRow
+            description={f.description}
+            id={f.id}
+            title={f.title}
+            key={f.id}
+          />
+        ))}
       </ScrollView>
     </SafeAreaView>
   );

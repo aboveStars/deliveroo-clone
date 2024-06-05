@@ -1,8 +1,33 @@
-import { View, Text, ScrollView } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { ScrollView } from "react-native";
 import CatogoryCard from "./CatogoryCard";
+import { client, urlFor } from "@/sanity";
 
 const Catagories = () => {
+  const [catagories, setCatagories] = useState<
+    { title: string; image: string }[]
+  >([]);
+
+  useEffect(() => {
+    client
+      .fetch(
+        `*[_type == "category"] {
+      ...,
+    }`
+      )
+      .then((data) => {
+        console.log(data);
+        setCatagories(
+          data.map((d: any) => {
+            return {
+              title: d.title,
+              image: d.image,
+            };
+          })
+        );
+      });
+  }, []);
+
   return (
     <ScrollView
       horizontal
@@ -12,34 +37,20 @@ const Catagories = () => {
         paddingTop: 10,
       }}
     >
-      <CatogoryCard
-        imgUrl="https://cdn.yemek.com/uploads/2023/07/surmene-doner-avrupa-yakasi-en-iyi-donerciler-sena.jpg"
-        title="Test-1"
-      />
-      <CatogoryCard
-        imgUrl="https://cdn.yemek.com/uploads/2023/07/surmene-doner-avrupa-yakasi-en-iyi-donerciler-sena.jpg"
-        title="Test-2"
-      />
-      <CatogoryCard
-        imgUrl="https://cdn.yemek.com/uploads/2023/07/surmene-doner-avrupa-yakasi-en-iyi-donerciler-sena.jpg"
-        title="Test-3"
-      />
-      <CatogoryCard
-        imgUrl="https://cdn.yemek.com/uploads/2023/07/surmene-doner-avrupa-yakasi-en-iyi-donerciler-sena.jpg"
-        title="Test-4"
-      />
-      <CatogoryCard
-        imgUrl="https://cdn.yemek.com/uploads/2023/07/surmene-doner-avrupa-yakasi-en-iyi-donerciler-sena.jpg"
-        title="Test-5"
-      />
-      <CatogoryCard
-        imgUrl="https://cdn.yemek.com/uploads/2023/07/surmene-doner-avrupa-yakasi-en-iyi-donerciler-sena.jpg"
-        title="Test-6"
-      />
-      <CatogoryCard
-        imgUrl="https://cdn.yemek.com/uploads/2023/07/surmene-doner-avrupa-yakasi-en-iyi-donerciler-sena.jpg"
-        title="Test-7"
-      />
+      {catagories.map((c) => (
+        <CatogoryCard
+          imgUrl={urlFor(c.image).url()}
+          title={c.title}
+          key={c.title}
+        />
+      ))}
+      {catagories.map((c) => (
+        <CatogoryCard
+          imgUrl={urlFor(c.image).url()}
+          title={c.title}
+          key={c.title}
+        />
+      ))}
     </ScrollView>
   );
 };

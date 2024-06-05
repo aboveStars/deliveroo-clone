@@ -1,7 +1,10 @@
-import { View, Text, Image, Pressable } from "react-native";
+import { urlFor } from "@/sanity";
+import { useNavigation } from "@react-navigation/native";
+
 import React from "react";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { Image, Pressable, Text, View } from "react-native";
 import { MapPinIcon, StarIcon } from "react-native-heroicons/outline";
+import HomeScreen from "../Screens/HomeScreen";
 
 type Props = {
   id: string;
@@ -28,11 +31,32 @@ const RestaurantCard = ({
   shortDescription,
   title,
 }: Props) => {
+  const navigation = useNavigation();
+
+  const handleClick = () => {
+    // @ts-ignore
+    navigation.navigate("Restaurant", {
+      screen: HomeScreen,
+      params: {
+        id,
+        imageUrl: imageUrl,
+        title: title,
+        rating,
+        genre,
+        address,
+        shortDescription,
+        dishes,
+        long,
+        lat,
+      },
+    });
+  };
+
   return (
-    <Pressable className="mr-3 bg-white">
+    <Pressable className="mr-3 bg-white" onPress={handleClick}>
       <Image
         source={{
-          uri: imageUrl,
+          uri: urlFor(imageUrl).url(),
         }}
         className="h-36 w-64 rounded-sm"
       />
