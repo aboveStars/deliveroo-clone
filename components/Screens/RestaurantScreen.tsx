@@ -17,7 +17,7 @@ const RestaurantScreen = (props: Props) => {
     });
   }, []);
 
-  console.log(route.params)
+  console.log(route.params);
 
   return (
     <ScrollView>
