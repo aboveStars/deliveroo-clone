@@ -13,7 +13,7 @@ type Props = {
   rating: number;
   genre: string;
   address: string;
-  shortDescription: string;
+  short_description: string;
   dishes: string[];
   long: number;
   lat: number;
@@ -28,7 +28,7 @@ const RestaurantCard = ({
   lat,
   long,
   rating,
-  shortDescription,
+  short_description,
   title,
 }: Props) => {
   const navigation = useNavigation();
@@ -44,7 +44,7 @@ const RestaurantCard = ({
         rating,
         genre,
         address,
-        shortDescription,
+        short_description,
         dishes,
         long,
         lat,

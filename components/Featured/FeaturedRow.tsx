@@ -17,7 +17,7 @@ const FeaturedRow = ({ description, id, title }: Props) => {
   const [restaurants, setRestaurants] = useState<
     {
       address: string;
-      shortDescription: string;
+      short_description: string;
       dishes: string[];
       long: number;
       lat: number;
@@ -44,7 +44,7 @@ const FeaturedRow = ({ description, id, title }: Props) => {
       .then((data) => {
         const dataFethced: {
           address: string;
-          shortDescription: string;
+          short_description: string;
           dishes: string[];
           long: number;
           lat: number;
@@ -53,8 +53,6 @@ const FeaturedRow = ({ description, id, title }: Props) => {
           image: string;
           name: string;
         }[] = data[0].restaurants;
-
-        console.log(data[0].restaurants);
 
         setRestaurants(dataFethced);
       });
@@ -81,13 +79,13 @@ const FeaturedRow = ({ description, id, title }: Props) => {
             id={r._id}
             title={r.name}
             rating={r.rating}
-            genre={r.shortDescription}
+            genre={r.short_description}
             address={r.address}
             imageUrl={r.image}
             long={r.long}
             lat={r.lat}
             dishes={r.dishes}
-            shortDescription={r.shortDescription}
+            short_description={r.short_description}
           />
         ))}
         {restaurants?.map((r) => (
@@ -96,13 +94,13 @@ const FeaturedRow = ({ description, id, title }: Props) => {
             id={r._id}
             title={r.name}
             rating={r.rating}
-            genre={r.shortDescription}
+            genre={r.short_description}
             address={r.address}
             imageUrl={r.image}
             long={r.long}
             lat={r.lat}
             dishes={r.dishes}
-            shortDescription={r.shortDescription}
+            short_description={r.short_description}
           />
         ))}
       </ScrollView>
