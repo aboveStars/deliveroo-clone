@@ -1,17 +1,16 @@
-import { View, Text, Pressable, Image, ViewBase } from "react-native";
-import React, { useEffect, useState } from "react";
+import {
+  addToBasket,
+  removeFromBasket,
+  selectBasketItemsWithId,
+} from "@/reducers/basketSlice";
 import { urlFor } from "@/sanity";
+import React, { useState } from "react";
+import { Image, Pressable, Text, View } from "react-native";
 import {
   MinusCircleIcon,
   PlusCircleIcon,
 } from "react-native-heroicons/outline";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addToBasket,
-  removeFromBasket,
-  selectBasketItems,
-  selectBasketItemsWithId,
-} from "@/reducers/basketSlice";
 
 type Props = {
   id: string;
@@ -27,7 +26,6 @@ const Dishrow = ({ description, id, image, name, price }: Props) => {
   const itemsForThisRow = useSelector((state) =>
     selectBasketItemsWithId(state, id)
   );
-  const itemsForAllBasket = useSelector(selectBasketItems);
 
   const dispatch = useDispatch();
 
@@ -38,14 +36,6 @@ const Dishrow = ({ description, id, image, name, price }: Props) => {
   const removeItemFromBasket = () => {
     dispatch(removeFromBasket({ id, name, description, price, image }));
   };
-
-  useEffect(() => {
-    console.log(itemsForThisRow);
-  }, [itemsForThisRow]);
-
-  useEffect(() => {
-    console.log(itemsForAllBasket);
-  }, [itemsForAllBasket]);
 
   return (
     <>
